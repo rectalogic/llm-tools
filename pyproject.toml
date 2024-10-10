@@ -1,0 +1,80 @@
+# Copyright (C) 2024 Andrew Wason
+# SPDX-License-Identifier: Apache-2.0
+[project]
+name = "llm-tools"
+version = "0.1.0"
+requires-python = ">= 3.9"
+description = "Plugin for llm adding various tools"
+readme = "README.md"
+authors = [{name = "Andrew Wason"}]
+license = {text = "Apache-2.0"}
+classifiers = [
+    "License :: OSI Approved :: Apache Software License"
+]
+dependencies = [
+    "click>=8.1.7",
+    "httpx>=0.27.2",
+    "llm~=0.16",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "mypy>=1.11.2",
+    "pytest~=8.3.3",
+    "ruff~=0.6.8",
+]
+
+[project.urls]
+Homepage = "https://github.com/rectalogic/llm-tools"
+Changelog = "https://github.com/rectalogic/llm-tools/releases"
+Issues = "https://github.com/rectalogic/llm-tools/issues"
+CI = "https://github.com/rectalogic/llm-tools/actions"
+
+[project.entry-points.llm]
+transformers = "llm_tools"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+target-version = "py39"
+line-length = 108
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+    # flake8-2020
+    "YTT",
+    # flake8-bandit
+    "S",
+    # flake8-bugbear
+    "B",
+    # flake8-builtins
+    "A",
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I",
+    # flake8-no-pep420
+    "INP",
+    # pyupgrade
+    "UP",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "INP001"]
+
+[tool.mypy]
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+strict_equality = true
+no_implicit_optional = true
+show_error_codes = true
+files = "*.py"
