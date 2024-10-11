@@ -4,7 +4,7 @@
 import json
 import shutil
 import subprocess
-from typing import Annotated, Optional
+from typing import Annotated, Any, Optional
 
 
 class DockerBash:
@@ -17,26 +17,28 @@ class DockerBash:
         self.docker = shutil.which("docker")
         if not self.docker:
             raise ValueError("Unable to find docker command")
-        completed = subprocess.run(  # noqa: S603
-            [self.docker, "run", "--rm", "--detach", "ubuntu:latest", "/usr/bin/sleep", "infinity"],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        self.container = completed.stdout.strip()
 
     def __call__(self, command_line: Annotated[str, "A `bash` shell command line to execute."]) -> str:
+        if self.container is None:
+            completed = subprocess.run(  # noqa: S603
+                [self.docker, "run", "--rm", "--detach", "ubuntu:latest", "/usr/bin/sleep", "infinity"],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            self.container = completed.stdout.strip()
+
         completed = subprocess.run(  # noqa: S603
             [self.docker, "exec", self.container, "bash", "-c", command_line],
             capture_output=True,
             text=True,
         )
 
-        result = {"stdout": completed.stdout, "stderr": completed.stderr}
+        result: dict[str, Any] = {"stdout": completed.stdout, "stderr": completed.stderr}
         if completed.returncode != 0:
             result["is_error"] = True
         return json.dumps(result)
 
     def __del__(self):
         if self.container:
-            subprocess.run([self.docker, "stop", self.container])
+            subprocess.run([self.docker, "stop", self.container])  # noqa: S603

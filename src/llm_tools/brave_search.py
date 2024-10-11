@@ -1,5 +1,6 @@
 # Copyright (C) 2024 Andrew Wason
 # SPDX-License-Identifier: Apache-2.0
+from functools import cached_property
 from typing import Annotated, Optional
 
 import httpx
@@ -20,14 +21,15 @@ class BraveSearch(_get_key_mixin):
     SEARCH_URL = "https://api.search.brave.com/res/v1/web/search"
 
     def __init__(self):
-        key = self.get_key()
-        if not key:
-            raise ValueError("Brave Search requires an API key.")
-        self.client = httpx.Client(
+        self.key = self.get_key()
+
+    @cached_property
+    def client(self) -> httpx.Client:
+        return httpx.Client(
             headers={
                 "Accept": "application/json",
                 "Accept-Encoding": "gzip",
-                "X-Subscription-Token": key,
+                "X-Subscription-Token": self.key,
             }
         )
 
