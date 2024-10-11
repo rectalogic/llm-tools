@@ -11,7 +11,7 @@ from .random_number import random_number
 
 @llm.hookimpl
 def register_tools(register):
-    register(random_number)
+    register(llm.Tool(random_number))
 
     try:
         register(llm.Tool(BraveSearch()))

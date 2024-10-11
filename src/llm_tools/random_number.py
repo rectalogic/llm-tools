@@ -5,10 +5,7 @@ import random
 import sys
 from typing import Annotated
 
-import llm
 
-
-@llm.Tool
 def random_number(
     minimum: Annotated[int, "The minimum value of the random number, default is 0"] = 0,
     maximum: Annotated[
@@ -16,4 +13,4 @@ def random_number(
     ] = sys.maxsize,
 ) -> str:
     """Generate a random number."""
-    return str(random.randrange(maximum))  # noqa: S311
+    return str(random.randrange(minimum, maximum))  # noqa: S311
