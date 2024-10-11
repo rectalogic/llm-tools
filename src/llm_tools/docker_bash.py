@@ -16,7 +16,7 @@ class DockerBash:
         self.docker = shutil.which("docker")
         if not self.docker:
             raise ValueError("docker is not installed")
-        self.process = subprocess.Popen( # noqa: S603
+        self.process = subprocess.Popen(  # noqa: S603
             [self.docker, "run", "--rm", "-i", "ubuntu:latest", "bash"],
             text=True,
             stdin=subprocess.PIPE,
@@ -28,15 +28,17 @@ class DockerBash:
         self.container = self.process.stdout.readline().strip()
 
     def __call__(self, command_line: Annotated[str, "A `bash` shell command line to execute."]) -> str:
-        completed = subprocess.run( # noqa: S603
-            [self.docker, "exec", "-i", self.container, "bash", "-c", command_line],
-            check=True,
+        completed = subprocess.run(  # noqa: S603
+            [self.docker, "exec", self.container, "bash", "-c", command_line],
             capture_output=True,
             text=True,
         )
 
         print("result", completed.stdout, completed.stderr)
-        return json.dumps({"stdout": completed.stdout, "stderr": completed.stderr})
+        result = {"stdout": completed.stdout, "stderr": completed.stderr}
+        if completed.returncode != 0:
+            result["is_error"] = True
+        return json.dumps(result)
 
     def __del__(self):
         if self.process:

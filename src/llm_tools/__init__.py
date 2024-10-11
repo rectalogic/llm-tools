@@ -6,13 +6,10 @@ import llm
 
 from .brave_search import BraveSearch
 from .docker_bash import DockerBash
-from .random_number import random_number
 
 
 @llm.hookimpl
 def register_tools(register):
-    register(llm.Tool(random_number))
-
     try:
         register(llm.Tool(BraveSearch()))
     except llm.NeedsKeyException as e:
