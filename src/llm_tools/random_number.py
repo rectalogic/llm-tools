@@ -16,4 +16,4 @@ def random_number(
     ] = sys.maxsize,
 ) -> str:
     """Generate a random number."""
-    return str(random.randrange(maximum)) # noqa: S311
+    return str(random.randrange(maximum))  # noqa: S311
