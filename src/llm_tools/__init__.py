@@ -7,11 +7,14 @@ import llm
 from .brave_search import BraveSearch
 from .docker_bash import DockerBash
 from .google_news import GoogleNews
-
+from .call_llm import CallLLM
+from .jina import JinaReadURL
 
 @llm.hookimpl
 def register_tools(register):
     register(llm.Tool(GoogleNews()))
+    register(llm.Tool(CallLLM()))
+    register(llm.Tool(JinaReadURL))
 
     try:
         register(llm.Tool(BraveSearch()))
